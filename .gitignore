@@ -74,6 +74,7 @@ yarn-error.log
 !.yarn/sdks
 !.yarn/versions
 
-# APK files (exceeds github 100MB limit)
+# APK files (allow tracking for release package < 100MB)
 *.apk
+!apk/*.apk
 mo_may_ao.bat
