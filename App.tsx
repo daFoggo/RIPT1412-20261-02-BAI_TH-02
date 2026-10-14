@@ -29,6 +29,7 @@ function AppTabs() {
 
   const screenOptions: BottomTabNavigationOptions = {
     headerShown: false,
+    animation: 'shift',
     tabBarActiveTintColor: theme.colors.primary,
     tabBarInactiveTintColor: theme.colors.onSurfaceVariant,
     tabBarStyle: {

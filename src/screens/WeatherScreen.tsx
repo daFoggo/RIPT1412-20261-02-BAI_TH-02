@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Animated, RefreshControl, ScrollView, StyleSheet, View } from 'react-native';
 import {
   ActivityIndicator,
   Appbar,
@@ -14,7 +14,6 @@ import {
 import { CurrentWeatherCard } from '../components/CurrentWeatherCard';
 import { DailyForecastCard } from '../components/DailyForecastCard';
 import { HourlyForecastCard } from '../components/HourlyForecastCard';
-import { WeatherMetricsCard } from '../components/WeatherMetricsCard';
 import { WeatherDetailDialog } from '../components/WeatherDetailDialog';
 import { useAppTheme } from '../context/ThemeContext';
 import {
@@ -48,6 +47,19 @@ export function WeatherScreen({ navigation, route }: Props) {
   const [dialogVisible, setDialogVisible] = useState(false);
 
   const [snackbarText, setSnackbarText] = useState<string | null>(null);
+
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (weatherData && !loading) {
+      fadeAnim.setValue(0);
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 350,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [weatherData, loading, fadeAnim]);
 
   const loadWeather = useCallback(
     async (lat?: number, lon?: number, locName?: string) => {
@@ -219,8 +231,7 @@ export function WeatherScreen({ navigation, route }: Props) {
           buttons={[
             { value: 'all', label: 'Tất cả' },
             { value: 'hourly', label: '24 Giờ' },
-            { value: 'daily', label: '5 Ngày' },
-            { value: 'metrics', label: '8 Chỉ số' },
+            { value: 'daily', label: '5-7 Ngày' },
           ]}
         />
       </View>
@@ -253,39 +264,36 @@ export function WeatherScreen({ navigation, route }: Props) {
           </Card>
         </View>
       ) : weatherData ? (
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          {/* Current weather summary card */}
-          <CurrentWeatherCard weather={weatherData} />
+        <Animated.View style={{ flex: 1, opacity: fadeAnim }}>
+          <ScrollView
+            style={styles.scrollView}
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            {/* Current weather summary card */}
+            <CurrentWeatherCard weather={weatherData} />
 
-          {/* 24-Hour Forecast */}
-          {(activeSegment === 'all' || activeSegment === 'hourly') && (
-            <HourlyForecastCard
-              items={weatherData.hourly}
-              onSelectHour={handleSelectHour}
-            />
-          )}
+            {/* 24-Hour Forecast */}
+            {(activeSegment === 'all' || activeSegment === 'hourly') && (
+              <HourlyForecastCard
+                items={weatherData.hourly}
+                onSelectHour={handleSelectHour}
+              />
+            )}
 
-          {/* 5-7 Days Forecast */}
-          {(activeSegment === 'all' || activeSegment === 'daily') && (
-            <DailyForecastCard
-              items={weatherData.daily}
-              selectedDayId={selectedDay?.id}
-              onSelectDay={handleSelectDay}
-            />
-          )}
-
-          {/* 8 Detailed Weather Metrics */}
-          {(activeSegment === 'all' || activeSegment === 'metrics') && (
-            <WeatherMetricsCard weather={weatherData} />
-          )}
-        </ScrollView>
+            {/* 5-7 Days Forecast */}
+            {(activeSegment === 'all' || activeSegment === 'daily') && (
+              <DailyForecastCard
+                items={weatherData.daily}
+                selectedDayId={selectedDay?.id}
+                onSelectDay={handleSelectDay}
+              />
+            )}
+          </ScrollView>
+        </Animated.View>
       ) : null}
 
       {/* Weather Detail Dialog */}
