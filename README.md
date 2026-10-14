@@ -2,7 +2,7 @@
 
 Dự án ứng dụng Chat di động được xây dựng bằng **React Native**, **React Navigation**, **React Native Paper (Material Design 3)**, áp dụng các tiêu chuẩn kiến trúc hiện đại:
 - **Vercel Composition Patterns**: Compound Components, Explicit Variants, Slot Composition, loại bỏ boolean prop proliferation.
-- **Lazy Routing & Code Splitting**: Tải bất đồng bộ các màn hình qua `React.lazy()` và `React.Suspense` với màn hình chờ `LoadingScreen`.
+- **Tối ưu hóa hiệu năng**: Dữ liệu tải tức thì (zero latency), chuyển tab mượt mà 60fps qua Bottom Tab navigation.
 
 ---
 
@@ -58,7 +58,6 @@ Dự án ứng dụng Chat di động được xây dựng bằng **React Native
 
 ```
 WeatherApp/
-├── ChatApp.apk                    # File APK đã đóng gói sẵn
 ├── App.tsx                        # Root component & providers wrapper
 ├── src/
 │   ├── components/                # Reusable Compound Components
@@ -67,8 +66,7 @@ WeatherApp/
 │   │   │   ├── ConversationItem.tsx
 │   │   │   └── MessageBubble.tsx
 │   │   ├── common/
-│   │   │   ├── EmptyState.tsx
-│   │   │   └── LoadingScreen.tsx
+│   │   │   └── EmptyState.tsx
 │   │   ├── contacts/
 │   │   │   └── ContactItem.tsx
 │   │   └── notifications/
@@ -76,7 +74,7 @@ WeatherApp/
 │   ├── context/                   # Quản lý trạng thái toàn cục
 │   │   ├── ChatContext.tsx
 │   │   └── ThemeContext.tsx
-│   ├── navigation/                # Module điều hướng & Lazy routes
+│   ├── navigation/                # Module điều hướng
 │   │   ├── AppTabs.tsx
 │   │   ├── RootNavigator.tsx
 │   │   └── routes.tsx
@@ -100,12 +98,11 @@ WeatherApp/
 
 ### 1. Cài đặt file APK trực tiếp lên thiết bị/máy ảo:
 File APK đã được build tại:
-- `ChatApp.apk` (thư mục gốc)
-- `android/app/build/outputs/apk/debug/app-debug.apk`
+`android/app/build/outputs/apk/debug/app-debug.apk`
 
 Cài đặt bằng lệnh:
 ```bash
-adb install ChatApp.apk
+adb install android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ### 2. Khởi chạy bằng mã nguồn:
