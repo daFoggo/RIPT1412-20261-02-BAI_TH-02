@@ -73,3 +73,7 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# APK files (exceeds github 100MB limit)
+*.apk
+mo_may_ao.bat

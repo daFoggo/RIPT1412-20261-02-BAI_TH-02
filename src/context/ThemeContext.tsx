@@ -29,6 +29,7 @@ interface ThemeContextType {
   theme: MD3Theme;
   navTheme: any;
   toggleTheme: () => void;
+  setDarkMode: (value: boolean) => void;
 }
 
 const ThemeContext = createContext<ThemeContextType>({
@@ -36,6 +37,7 @@ const ThemeContext = createContext<ThemeContextType>({
   theme: AppLightTheme,
   navTheme: adaptedLight,
   toggleTheme: () => {},
+  setDarkMode: () => {},
 });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -50,11 +52,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setIsDarkMode((prev) => !prev);
   };
 
+  const setDarkMode = (value: boolean) => {
+    setIsDarkMode(value);
+  };
+
   const theme = isDarkMode ? AppDarkTheme : AppLightTheme;
   const navTheme = isDarkMode ? adaptedDark : adaptedLight;
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, theme, navTheme, toggleTheme }}>
+    <ThemeContext.Provider value={{ isDarkMode, theme, navTheme, toggleTheme, setDarkMode }}>
       {children}
     </ThemeContext.Provider>
   );
